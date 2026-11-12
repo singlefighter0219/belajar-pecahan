@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Dunia Pecahan</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka & Nunito -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'child': '0 8px 0px rgba(0, 0, 0, 0.06), 0 10px 15px -3px rgba(0, 0, 0, 0.05)',
+                        'child-hover': '0 12px 0px rgba(0, 0, 0, 0.09), 0 15px 20px -3px rgba(0, 0, 0, 0.08)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 40%, #f3e8ff 100%);
+            min-height: 100vh;
+            user-select: none;
+        }
+
+        .heading-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Fun Animations */
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+        @keyframes bounce-mascot {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse-star {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.18) rotate(12deg); }
+        }
+        @keyframes rocket-fly {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(-5deg); }
+        }
+
+        .animate-float { animation: float-slow 4s ease-in-out infinite; }
+        .animate-mascot { animation: bounce-mascot 2.5s ease-in-out infinite; }
+        .animate-star { animation: pulse-star 2.2s ease-in-out infinite; }
+        .animate-rocket { animation: rocket-fly 3s ease-in-out infinite; }
+
+        .modal-backdrop {
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .interactive-slice {
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+        .interactive-slice:hover {
+            filter: brightness(1.15);
+            transform: scale(1.03);
+        }
+
+        /* Canvas overlay for confetti */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen text-slate-800 antialiased justify-between p-4 sm:p-6 md:p-8">
+
+    <!-- Confetti Canvas for Gamification -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="max-w-5xl mx-auto w-full flex-grow flex flex-col justify-between">
+
+        <!-- HEADER SECTION -->
+        <header class="text-center mt-2 mb-6 sm:mb-8">
+            <div class="flex items-center justify-center gap-2 sm:gap-4 mb-2">
+                <!-- Rocket Icon Left -->
+                <div class="animate-rocket text-3xl sm:text-4xl md:text-5xl filter drop-shadow">
+                    🚀
+                </div>
+                <!-- Main Title -->
+                <h1 class="heading-font text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-wider text-slate-800 uppercase drop-shadow-sm">
+                    PETUALANGAN DUNIA PECAHAN
+                </h1>
+                <!-- Star Icon Right -->
+                <div class="animate-star text-amber-400 text-3xl sm:text-4xl md:text-5xl filter drop-shadow">
+                    ⭐
+                </div>
+            </div>
+
+            <!-- Subtitle with New Mascots: Bimo & Tara -->
+            <p class="heading-font text-slate-600 text-base sm:text-xl font-semibold tracking-wide">
+                Pilih petualanganmu di bawah ini bersama <span class="text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">Bimo 🐼</span> & <span class="text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded-full border border-orange-300">Tara 🦊</span>!
+            </p>
+        </header>
+
+        <!-- 5 MODULE CARDS (RESPONSIVE GRID) -->
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 my-auto">
+
+            <!-- MODUL 1: Apa itu Pecahan? (Pastel Blue) -->
+            <div onclick="openModal(1)" class="group cursor-pointer bg-[#dbeafe] border-4 border-[#3b82f6] rounded-3xl p-5 shadow-child hover:shadow-child-hover hover:-translate-y-2 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+                <div id="badge-1" class="hidden absolute top-3 right-3 bg-blue-600 text-white rounded-full p-1 shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="heading-font flex-shrink-0 w-10 h-10 rounded-full bg-white border-2 border-[#3b82f6] text-[#1d4ed8] font-extrabold text-xl flex items-center justify-center shadow-inner">
+                        1
+                    </div>
+                    <div>
+                        <span class="heading-font text-xs font-bold text-blue-700 uppercase tracking-wider block">Modul 1</span>
+                        <h2 class="heading-font text-lg sm:text-xl font-bold text-slate-800 mb-1 group-hover:text-blue-700 transition-colors">
+                            Apa itu Pecahan?
+                        </h2>
+                    </div>
+                </div>
+                <p class="text-slate-600 text-sm font-semibold leading-relaxed mt-3 flex items-start gap-2 bg-white/60 p-2.5 rounded-2xl border border-blue-200">
+                    <span class="text-xl">🍕</span> <span>Yuk potong pizza dan cokelat jadi bagian sama besar!</span>
+                </p>
+            </div>
+
+            <!-- MODUL 2: Mengenal Jenis Pecahan (Pastel Yellow) -->
+            <div onclick="openModal(2)" class="group cursor-pointer bg-[#fef3c7] border-4 border-[#d97706] rounded-3xl p-5 shadow-child hover:shadow-child-hover hover:-translate-y-2 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+                <div id="badge-2" class="hidden absolute top-3 right-3 bg-amber-600 text-white rounded-full p-1 shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="heading-font flex-shrink-0 w-10 h-10 rounded-full bg-white border-2 border-[#d97706] text-[#b45309] font-extrabold text-xl flex items-center justify-center shadow-inner">
+                        2
+                    </div>
+                    <div>
+                        <span class="heading-font text-xs font-bold text-amber-700 uppercase tracking-wider block">Modul 2</span>
+                        <h2 class="heading-font text-lg sm:text-xl font-bold text-slate-800 mb-1 group-hover:text-amber-700 transition-colors">
+                            Mengenal Jenis Pecahan
+                        </h2>
+                    </div>
+                </div>
+                <p class="text-slate-600 text-sm font-semibold leading-relaxed mt-3 flex items-start gap-2 bg-white/60 p-2.5 rounded-2xl border border-amber-200">
+                    <span class="text-xl">🃏</span> <span>Dari pecahan biasa, campuran, desimal, sampai persen!</span>
+                </p>
+            </div>
+
+            <!-- MODUL 3: Pecahan Senilai (Pastel Peach/Pink) -->
+            <div onclick="openModal(3)" class="group cursor-pointer bg-[#ffe4e6] border-4 border-[#e11d48] rounded-3xl p-5 shadow-child hover:shadow-child-hover hover:-translate-y-2 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+                <div id="badge-3" class="hidden absolute top-3 right-3 bg-rose-600 text-white rounded-full p-1 shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="heading-font flex-shrink-0 w-10 h-10 rounded-full bg-white border-2 border-[#e11d48] text-[#be123c] font-extrabold text-xl flex items-center justify-center shadow-inner">
+                        3
+                    </div>
+                    <div>
+                        <span class="heading-font text-xs font-bold text-rose-700 uppercase tracking-wider block">Modul 3</span>
+                        <h2 class="heading-font text-lg sm:text-xl font-bold text-slate-800 mb-1 group-hover:text-rose-700 transition-colors">
+                            Pecahan Senilai
+                        </h2>
+                    </div>
+                </div>
+                <p class="text-slate-600 text-sm font-semibold leading-relaxed mt-3 flex items-start gap-2 bg-white/60 p-2.5 rounded-2xl border border-rose-200">
+                    <span class="text-xl">📄</span> <span>Lipat kertas ajaib: beda angka tapi luasnya sama!</span>
+                </p>
+            </div>
+
+            <!-- MODUL 4: Operasi Hitung Dasar (Pastel Green) -->
+            <div onclick="openModal(4)" class="group cursor-pointer bg-[#dcfce7] border-4 border-[#16a34a] rounded-3xl p-5 shadow-child hover:shadow-child-hover hover:-translate-y-2 transition-all duration-300 relative overflow-hidden flex flex-col justify-between">
+                <div id="badge-4" class="hidden absolute top-3 right-3 bg-emerald-600 text-white rounded-full p-1 shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="heading-font flex-shrink-0 w-10 h-10 rounded-full bg-white border-2 border-[#16a34a] text-[#15803d] font-extrabold text-xl flex items-center justify-center shadow-inner">
+                        4
+                    </div>
+                    <div>
+                        <span class="heading-font text-xs font-bold text-emerald-700 uppercase tracking-wider block">Modul 4</span>
+                        <h2 class="heading-font text-lg sm:text-xl font-bold text-slate-800 mb-1 group-hover:text-emerald-700 transition-colors">
+                            Operasi Hitung Dasar
+                        </h2>
+                    </div>
+                </div>
+                <p class="text-slate-600 text-sm font-semibold leading-relaxed mt-3 flex items-start gap-2 bg-white/60 p-2.5 rounded-2xl border border-emerald-200">
+                    <span class="text-xl">🧁</span> <span>Campur bahan kue ajaib dengan menjumlahkan pecahan!</span>
+                </p>
+            </div>
+
+            <!-- MODUL 5: Mini Kuis & Tantangan (Pastel Lavender) -->
+            <div onclick="openModal(5)" class="group cursor-pointer bg-[#f3e8ff] border-4 border-[#9333ea] rounded-3xl p-5 shadow-child hover:shadow-child-hover hover:-translate-y-2 transition-all duration-300 relative overflow-hidden md:col-span-2 lg:col-span-1 flex flex-col justify-between">
+                <div id="badge-5" class="hidden absolute top-3 right-3 bg-purple-600 text-white rounded-full p-1 shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="heading-font flex-shrink-0 w-10 h-10 rounded-full bg-white border-2 border-[#9333ea] text-[#7e22ce] font-extrabold text-xl flex items-center justify-center shadow-inner">
+                        5
+                    </div>
+                    <div>
+                        <span class="heading-font text-xs font-bold text-purple-700 uppercase tracking-wider block">Modul 5</span>
+                        <h2 class="heading-font text-lg sm:text-xl font-bold text-slate-800 mb-1 group-hover:text-purple-700 transition-colors">
+                            Mini Kuis & Tantangan
+                        </h2>
+                    </div>
+                </div>
+                <p class="text-slate-600 text-sm font-semibold leading-relaxed mt-3 flex items-start gap-2 bg-white/60 p-2.5 rounded-2xl border border-purple-200">
+                    <span class="text-xl">🏆</span> <span>Uji kemampuanmu dan raih Lencana Ahli Pecahan!</span>
+                </p>
+            </div>
+
+        </main>
+
+        <!-- FOOTER: BIMO & TARA MASCOTS + STAR TRACKER -->
+        <footer class="mt-8 mb-4 text-center">
+            <!-- Progress Star Tracker -->
+            <div class="inline-flex items-center gap-3 bg-white/80 backdrop-blur-md border-3 border-amber-300 rounded-full px-5 py-2 mb-5 shadow-md">
+                <span class="heading-font text-xs sm:text-sm font-bold text-amber-900">Bintang Penjelajah:</span>
+                <div class="flex gap-1.5" id="star-tracker">
+                    <span class="text-slate-300 text-xl transition-all duration-300">★</span>
+                    <span class="text-slate-300 text-xl transition-all duration-300">★</span>
+                    <span class="text-slate-300 text-xl transition-all duration-300">★</span>
+                    <span class="text-slate-300 text-xl transition-all duration-300">★</span>
+                    <span class="text-slate-300 text-xl transition-all duration-300">★</span>
+                </div>
+            </div>
+
+            <!-- Original Mascots: Bimo (Panda 🐼) & Tara (Fox 🦊) -->
+            <div class="flex items-center justify-center gap-8 sm:gap-14">
+                
+                <!-- Mascot 1: Bimo Panda -->
+                <div onclick="mascotTalk('bimo')" class="group cursor-pointer flex flex-col items-center animate-mascot" style="animation-delay: 0s;">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-slate-100 to-emerald-100 rounded-3xl border-4 border-emerald-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform relative">
+                        <!-- SVG Bimo Panda Avatar -->
+                        <svg class="w-12 h-12 sm:w-16 sm:h-16" viewBox="0 0 100 100">
+                            <!-- Ears -->
+                            <circle cx="20" cy="22" r="14" fill="#1e293b"/>
+                            <circle cx="80" cy="22" r="14" fill="#1e293b"/>
+                            <circle cx="20" cy="22" r="7" fill="#f1f5f9"/>
+                            <circle cx="80" cy="22" r="7" fill="#f1f5f9"/>
+                            <!-- Head -->
+                            <ellipse cx="50" cy="56" rx="38" ry="32" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+                            <!-- Eye Patches -->
+                            <ellipse cx="34" cy="52" rx="11" ry="14" fill="#1e293b" transform="rotate(-15 34 52)"/>
+                            <ellipse cx="66" cy="52" rx="11" ry="14" fill="#1e293b" transform="rotate(15 66 52)"/>
+                            <!-- Eyes -->
+                            <circle cx="35" cy="50" r="4" fill="#ffffff"/>
+                            <circle cx="65" cy="50" r="4" fill="#ffffff"/>
+                            <circle cx="36" cy="49" r="1.8" fill="#0f172a"/>
+                            <circle cx="64" cy="49" r="1.8" fill="#0f172a"/>
+                            <!-- Nose & Mouth -->
+                            <ellipse cx="50" cy="62" rx="6" ry="4" fill="#0f172a"/>
+                            <path d="M 45 68 Q 50 74 55 68" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                            <!-- Cheeks -->
+                            <circle cx="24" cy="62" r="5" fill="#f43f5e" opacity="0.3"/>
+                            <circle cx="76" cy="62" r="5" fill="#f43f5e" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <span class="heading-font text-xs sm:text-sm font-bold text-emerald-800 mt-1.5 bg-emerald-100 px-3 py-0.5 rounded-full border border-emerald-300 shadow-sm">Bimo 🐼</span>
+                </div>
+
+                <!-- Center Decorative Planet/Star Icon -->
+                <div class="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center animate-star text-amber-400 text-4xl sm:text-5xl filter drop-shadow">
+                    🌟
+                </div>
+
+                <!-- Mascot 2: Tara Fox -->
+                <div onclick="mascotTalk('tara')" class="group cursor-pointer flex flex-col items-center animate-mascot" style="animation-delay: 1s;">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-orange-100 to-amber-200 rounded-3xl border-4 border-orange-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform relative">
+                        <!-- SVG Tara Fox Avatar -->
+                        <svg class="w-12 h-12 sm:w-16 sm:h-16" viewBox="0 0 100 100">
+                            <!-- Ears -->
+                            <polygon points="12,35 32,5 45,35" fill="#ea580c"/>
+                            <polygon points="88,35 68,5 55,35" fill="#ea580c"/>
+                            <polygon points="20,32 32,14 40,32" fill="#ffedd5"/>
+                            <polygon points="80,32 68,14 60,32" fill="#ffedd5"/>
+                            <!-- Head Base -->
+                            <polygon points="50,90 12,42 88,42" fill="#f97316"/>
+                            <!-- White Cheek Patches -->
+                            <polygon points="50,90 12,42 42,55" fill="#fff7ed"/>
+                            <polygon points="50,90 88,42 58,55" fill="#fff7ed"/>
+                            <!-- Eyes -->
+                            <ellipse cx="34" cy="48" rx="4.5" ry="6.5" fill="#1e293b"/>
+                            <ellipse cx="66" cy="48" rx="4.5" ry="6.5" fill="#1e293b"/>
+                            <circle cx="32.5" cy="46" r="1.8" fill="#ffffff"/>
+                            <circle cx="64.5" cy="46" r="1.8" fill="#ffffff"/>
+                            <!-- Nose -->
+                            <circle cx="50" cy="85" r="5" fill="#0f172a"/>
+                        </svg>
+                    </div>
+                    <span class="heading-font text-xs sm:text-sm font-bold text-orange-800 mt-1.5 bg-orange-100 px-3 py-0.5 rounded-full border border-orange-300 shadow-sm">Tara 🦊</span>
+                </div>
+
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- MODAL POPUP INTERACTIVE DIALOG -->
+    <div id="modal-container" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop transition-opacity duration-300">
+        
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto border-4 border-amber-300 shadow-2xl p-5 sm:p-7 relative flex flex-col">
+            
+            <!-- Close Button X -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 text-slate-500 font-extrabold hover:bg-rose-100 hover:text-rose-600 transition-colors flex items-center justify-center text-xl shadow-sm">
+                ✕
+            </button>
+
+            <!-- Modal Header -->
+            <div class="flex items-center gap-3 mb-4 pr-10">
+                <span id="modal-badge" class="heading-font w-10 h-10 rounded-full bg-blue-500 text-white font-extrabold text-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                    1
+                </span>
+                <div>
+                    <span id="modal-subheading" class="heading-font text-xs font-bold text-slate-400 uppercase tracking-wider block">Modul Pembelajaran</span>
+                    <h3 id="modal-title" class="heading-font text-xl sm:text-2xl font-bold text-slate-800">
+                        Judul Modul
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Dialogue Speech Bubbles (Bimo 🐼 & Tara 🦊) -->
+            <div class="space-y-3 mb-4">
+                <!-- Bimo Speech -->
+                <div class="flex items-start gap-3 bg-emerald-50 rounded-2xl p-3 sm:p-4 border border-emerald-200 shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-emerald-200 border-2 border-emerald-500 flex items-center justify-center text-xl flex-shrink-0">🐼</div>
+                    <div>
+                        <span class="heading-font font-bold text-emerald-800 text-xs sm:text-sm block">Bimo si Panda</span>
+                        <p id="bimo-dialog" class="text-slate-700 text-sm sm:text-base font-semibold leading-relaxed">
+                            Penjelasan Bimo...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tara Speech -->
+                <div class="flex items-start gap-3 bg-orange-50 rounded-2xl p-3 sm:p-4 border border-orange-200 shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-orange-200 border-2 border-orange-500 flex items-center justify-center text-xl flex-shrink-0">🦊</div>
+                    <div>
+                        <span class="heading-font font-bold text-orange-800 text-xs sm:text-sm block">Tara si Rubah</span>
+                        <p id="tara-dialog" class="text-slate-700 text-sm sm:text-base font-semibold leading-relaxed">
+                            Penjelasan Tara...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DYNAMIC INTERACTIVE ACTIVITY CONTAINER -->
+            <div id="interactive-area" class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 mb-5 flex-grow flex flex-col items-center justify-center min-h-[240px]">
+                <!-- Dynamic HTML Content Injected via JavaScript -->
+            </div>
+
+            <!-- Modal Action Footer -->
+            <div class="flex items-center justify-between gap-4 pt-3 border-t border-slate-100">
+                <span class="text-xs sm:text-sm text-slate-500 font-semibold italic">Selesaikan aktivitas di atas!</span>
+                <button id="complete-btn" onclick="completeCurrentModule()" class="heading-font bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-extrabold px-6 py-3 rounded-2xl shadow-md hover:shadow-lg transition-all transform active:scale-95 flex items-center gap-2">
+                    <span>Aku Paham & Selesai! ✨</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APP LOGIC & AUDIO SYNTHESIS -->
+    <script>
+        // Audio Synthesizer (Web Audio API)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playPopSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.08);
+        }
+
+        function playChimeSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const now = audioCtx.currentTime;
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, now + i * 0.09);
+                gain.gain.setValueAtTime(0.2, now + i * 0.09);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.3);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now + i * 0.09);
+                osc.stop(now + i * 0.09 + 0.3);
+            });
+        }
+
+        function playErrorSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(180, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.2);
+        }
+
+        // Global State Tracker
+        let currentModule = 1;
+        const completedModules = new Set();
+
+        // Module 1 State (Potong Pizza)
+        let m1Slices = 4;
+        let m1Eaten = new Array(8).fill(false);
+
+        // Module 2 State (Matching Game)
+        let m2SelectedCard = null;
+        let m2MatchesFound = 0;
+        const m2CardsData = [
+            { id: 1, text: "1/2", pair: "A", type: "pecahan" },
+            { id: 2, text: "0,5 = 50%", pair: "A", type: "desimal" },
+            { id: 3, text: "1/4", pair: "B", type: "pecahan" },
+            { id: 4, text: "0,25 = 25%", pair: "B", type: "desimal" },
+            { id: 5, text: "3/4", pair: "C", type: "pecahan" },
+            { id: 6, text: "0,75 = 75%", pair: "C", type: "desimal" },
+        ];
+        let m2ShuffledCards = [];
+
+        // Module 3 State (Lipat Kertas Digital)
+        let m3FoldLevel = 2; // 2, 4, 6, 8
+
+        // Module 4 State (Resep Kue Ajaib)
+        let m4RecipeIndex = 0;
+        const m4Recipes = [
+            { title: "Tepung Terigu", num1: 1, num2: 2, den: 4, label1: "1/4 Cangkir", label2: "2/4 Cangkir", totalNum: 3, totalDen: 4, isSameDenom: true },
+            { title: "Susu Manis", num1: 1, num2: 1, den1: 2, den2: 4, targetNum: 3, targetDen: 4, label1: "1/2 Cangkir", label2: "1/4 Cangkir", isSameDenom: false }
+        ];
+
+        // Module 5 State (Mini Quiz)
+        let m5CurrentQuestion = 0;
+        let m5Score = 0;
+        const m5Questions = [
+            { q: "Pada pecahan 3/5, angka 3 disebut sebagai...", options: ["Penyebut", "Pembilang", "Pecahan Campuran"], correct: 1 },
+            { q: "Bentuk desimal dari pecahan 1/2 adalah...", options: ["0,5", "0,25", "0,75"], correct: 0 },
+            { q: "Pecahan mana yang senilai dengan 2/4?", options: ["1/3", "1/2", "3/4"], correct: 1 },
+            { q: "Berapa hasil dari 1/5 + 2/5?", options: ["3/10", "3/5", "2/5"], correct: 1 },
+            { q: "Ibu memotong kue jadi 8 potong. Tara makan 2 potong. Berapa bagian kue yang dimakan Tara?", options: ["2/8", "6/8", "8/2"], correct: 0 }
+        ];
+
+        // Open Modal Handler
+        function openModal(modId) {
+            playPopSound();
+            currentModule = modId;
+            const container = document.getElementById('modal-container');
+            const badge = document.getElementById('modal-badge');
+            const sub = document.getElementById('modal-subheading');
+            const title = document.getElementById('modal-title');
+            const bimoDialog = document.getElementById('bimo-dialog');
+            const taraDialog = document.getElementById('tara-dialog');
+            const area = document.getElementById('interactive-area');
+
+            container.classList.remove('hidden');
+
+            if (modId === 1) {
+                badge.className = "heading-font w-10 h-10 rounded-full bg-blue-500 text-white font-extrabold text-xl flex items-center justify-center flex-shrink-0 shadow-md";
+                sub.innerText = "Modul 1 • Konsep Dasar";
+                title.innerText = "Apa itu Pecahan?";
+                bimoDialog.innerHTML = "Pecahan adalah <b>bagian dari keseluruhan yang utuh</b>. Angka di atas dinamakan <b>PEMBILANG</b>, dan angka di bawah dinamakan <b>PENYEBUT</b>!";
+                taraDialog.innerHTML = "Cobain potong pizza di bawah ini! Klik potongan yang mau kamu makan untuk melihat angkanya ubah secara otomatis 🍕!";
+                renderModule1(area);
+            }
+            else if (modId === 2) {
+                badge.className = "heading-font w-10 h-10 rounded-full bg-amber-500 text-white font-extrabold text-xl flex items-center justify-center flex-shrink-0 shadow-md";
+                sub.innerText = "Modul 2 • Bentuk Pecahan";
+                title.innerText = "Mengenal Jenis-Jenis Pecahan";
+                bimoDialog.innerHTML = "Pecahan punya banyak wajah! Ada pecahan biasa (1/2), desimal (0,5), dan persen (50%). Semuanya bisa bernilai sama!";
+                taraDialog.innerHTML = "Ayo main <b>Matching Game</b>! Cocokkan kartu pecahan biasa dengan bentuk desimal/persen yang pas!";
+                initModule2(area);
+            }
+            else if (modId === 3) {
+                badge.className = "heading-font w-10 h-10 rounded-full bg-rose-500 text-white font-extrabold text-xl flex items-center justify-center flex-shrink-0 shadow-md";
+                sub.innerText = "Modul 3 • Kesamaan Luas";
+                title.innerText = "Pecahan Senilai";
+                bimoDialog.innerHTML = "Pecahan senilai punya <b>angka yang berbeda</b> tetapi <b>luas/nilainya persis sama besar</b>.";
+                taraDialog.innerHTML = "Klik tombol lipatan kertas di bawah ini. Perhatikan luas daerah berwarna merah; besarnya selalu sama meskipun garis lipatannya makin banyak 📄!";
+                renderModule3(area);
+            }
+            else if (modId === 4) {
+                badge.className = "heading-font w-10 h-10 rounded-full bg-emerald-500 text-white font-extrabold text-xl flex items-center justify-center flex-shrink-0 shadow-md";
+                sub.innerText = "Modul 4 • Penjumlahan";
+                title.innerText = "Operasi Hitung Dasar";
+                bimoDialog.innerHTML = "Saat menjumlahkan pecahan dengan penyebut sama, kita hanya perlu <b>menjumlahkan angka di atas (pembilang)</b> saja!";
+                taraDialog.innerHTML = "Bantu kami membuat adonan kue ajaib 🧁! Tuangkan bahan ke dalam gelas takar untuk melihat jumlah keseluruhannya!";
+                renderModule4(area);
+            }
+            else if (modId === 5) {
+                badge.className = "heading-font w-10 h-10 rounded-full bg-purple-500 text-white font-extrabold text-xl flex items-center justify-center flex-shrink-0 shadow-md";
+                sub.innerText = "Modul 5 • Tantangan Akhir";
+                title.innerText = "Mini Kuis & Tantangan Akhir";
+                bimoDialog.innerHTML = "Saatnya membuktikan keahlianmu! Jawab 5 pertanyaan kuis dari kami untuk meraih Lencana Penjelajah Pecahan 🏆!";
+                taraDialog.innerHTML = "Jangan ragu ya! Jika ada yang kurang dipahami, kamu bisa mengulang modul sebelumnya kapan saja!";
+                initModule5(area);
+            }
+        }
+
+        function closeModal() {
+            playPopSound();
+            document.getElementById('modal-container').classList.add('hidden');
+        }
+
+        function completeCurrentModule() {
+            playChimeSound();
+            completedModules.add(currentModule);
+            
+            // Unhide check badge on module card
+            const badge = document.getElementById(`badge-${currentModule}`);
+            if (badge) badge.classList.remove('hidden');
+
+            // Update Star Tracker
+            updateStarTracker();
+
+            closeModal();
+        }
+
+        function updateStarTracker() {
+            const tracker = document.getElementById('star-tracker');
+            const stars = tracker.children;
+            const count = completedModules.size;
+
+            for (let i = 0; i < 5; i++) {
+                if (i < count) {
+                    stars[i].className = "text-amber-400 text-xl font-bold animate-star inline-block";
+                    stars[i].innerText = "⭐";
+                } else {
+                    stars[i].className = "text-slate-300 text-xl";
+                    stars[i].innerText = "★";
+                }
+            }
+        }
+
+        function mascotTalk(mascot) {
+            playPopSound();
+            if (mascot === 'bimo') {
+                alert("🐼 Bimo: Halo penjelajah cilik! Pilih modul di atas untuk mulai belajar pecahan bersama aku dan Tara!");
+            } else {
+                alert("🦊 Tara: Semangat ya! Belajar pecahan itu seru dan mudah kalau kita latihan terus!");
+            }
+        }
+
+
+        /* =============================================================
+           MODULE 1: POTONG PIZZA & ANATOMI PECAHAN
+        ============================================================= */
+        function renderModule1(container) {
+            const eatenCount = m1Eaten.slice(0, m1Slices).filter(Boolean).length;
+            const remainingCount = m1Slices - eatenCount;
+
+            let svgSlices = '';
+            const cx = 100, cy = 100, r = 85;
+
+            for (let i = 0; i < m1Slices; i++) {
+                const startAngle = (i * 360 / m1Slices) * (Math.PI / 180);
+                const endAngle = ((i + 1) * 360 / m1Slices) * (Math.PI / 180);
+
+                const x1 = cx + r * Math.cos(startAngle);
+                const y1 = cy + r * Math.sin(startAngle);
+                const x2 = cx + r * Math.cos(endAngle);
+                const y2 = cy + r * Math.sin(endAngle);
+
+                const largeArc = (360 / m1Slices) > 180 ? 1 : 0;
+                const pathData = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+
+                const isEaten = m1Eaten[i];
+                const sliceColor = isEaten ? '#f1f5f9' : (i % 2 === 0 ? '#fbbf24' : '#f59e0b');
+                const strokeColor = isEaten ? '#cbd5e1' : '#d97706';
+
+                const midAngle = ((i + 0.5) * 360 / m1Slices) * (Math.PI / 180);
+                const tx = cx + (r * 0.55) * Math.cos(midAngle);
+                const ty = cy + (r * 0.55) * Math.sin(midAngle);
+
+                svgSlices += `
+                    <g class="interactive-slice" onclick="toggleM1Slice(${i})">
+                        <path d="${pathData}" fill="${sliceColor}" stroke="${strokeColor}" stroke-width="3" />
+                        ${!isEaten ? `<circle cx="${tx}" cy="${ty}" r="5.5" fill="#dc2626"/>` : ''}
+                    </g>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="w-full flex flex-col items-center">
+                    
+                    <!-- Slice Selector -->
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xs sm:text-sm font-bold text-slate-600">Potong Pizza Jadi:</span>
+                        <div class="flex gap-1.5">
+                            ${[2, 3, 4, 6, 8].map(n => `
+                                <button onclick="setM1Slices(${n})" class="heading-font text-xs sm:text-sm px-3 py-1 rounded-xl font-bold transition-all ${m1Slices === n ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}">
+                                    ${n} Potong
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Pizza SVG -->
+                    <div class="relative w-44 h-44 sm:w-48 sm:h-48 my-1 filter drop-shadow-md">
+                        <svg viewBox="0 0 200 200" class="w-full h-full">
+                            <circle cx="100" cy="100" r="95" fill="#e2e8f0" stroke="#94a3b8" stroke-width="4"/>
+                            <circle cx="100" cy="100" r="88" fill="#ffffff"/>
+                            ${svgSlices}
+                        </svg>
+                    </div>
+
+                    <!-- Fraction Anatomy Box -->
+                    <div class="mt-3 bg-white p-3.5 rounded-2xl border-2 border-blue-200 shadow-sm flex items-center gap-6 justify-center w-full max-w-sm">
+                        <div class="flex flex-col items-center">
+                            <span class="heading-font text-2xl font-extrabold text-blue-600">${eatenCount}</span>
+                            <div class="w-12 h-1 bg-slate-800 rounded-full my-0.5"></div>
+                            <span class="heading-font text-2xl font-extrabold text-amber-600">${m1Slices}</span>
+                        </div>
+
+                        <div class="text-left text-xs sm:text-sm font-semibold text-slate-600 space-y-1">
+                            <p><span class="text-blue-600 font-bold">● Pembilang (${eatenCount}):</span> Bagian yang dimakan</p>
+                            <p><span class="text-amber-600 font-bold">● Penyebut (${m1Slices}):</span> Total seluruh potongan</p>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+        }
+
+        function setM1Slices(n) {
+            playPopSound();
+            m1Slices = n;
+            m1Eaten.fill(false);
+            renderModule1(document.getElementById('interactive-area'));
+        }
+
+        function toggleM1Slice(idx) {
+            playPopSound();
+            m1Eaten[idx] = !m1Eaten[idx];
+            renderModule1(document.getElementById('interactive-area'));
+        }
+
+
+        /* =============================================================
+           MODULE 2: MATCHING GAME (JENIS PECAHAN)
+        ============================================================= */
+        function initModule2(container) {
+            m2SelectedCard = null;
+            m2MatchesFound = 0;
+            // Shuffle cards
+            m2ShuffledCards = [...m2CardsData].sort(() => Math.random() - 0.5);
+            renderModule2(container);
+        }
+
+        function renderModule2(container) {
+            if (m2MatchesFound === m2CardsData.length / 2) {
+                container.innerHTML = `
+                    <div class="text-center p-6 bg-amber-50 rounded-2xl border-2 border-amber-300">
+                        <span class="text-5xl animate-bounce inline-block mb-2">🎉</span>
+                        <h4 class="heading-font text-xl font-bold text-amber-800 mb-1">Hebat Sekali! Semua Kartu Cocok!</h4>
+                        <p class="text-slate-600 text-sm font-semibold mb-4">Kamu sudah memahami hubungan antara pecahan biasa, desimal, dan persen!</p>
+                        <button onclick="initModule2(document.getElementById('interactive-area'))" class="heading-font bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 py-2 rounded-xl text-sm shadow-sm transition-all">
+                            Main Lagi 🔄
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            let cardsHTML = m2ShuffledCards.map(card => {
+                const isMatched = card.matched;
+                const isSelected = m2SelectedCard && m2SelectedCard.id === card.id;
+
+                let cardStyle = "bg-white border-2 border-slate-300 text-slate-700 hover:border-amber-400";
+                if (isMatched) {
+                    cardStyle = "bg-emerald-100 border-2 border-emerald-400 text-emerald-800 opacity-60 cursor-default";
+                } else if (isSelected) {
+                    cardStyle = "bg-amber-200 border-3 border-amber-500 text-amber-900 scale-105 shadow-md";
+                }
+
+                return `
+                    <button onclick="handleM2CardClick(${card.id})" ${isMatched ? 'disabled' : ''} class="h-20 rounded-2xl p-3 font-bold heading-font text-base sm:text-lg flex flex-col items-center justify-center transition-all duration-200 shadow-sm ${cardStyle}">
+                        <span>${card.text}</span>
+                        <span class="text-[10px] uppercase tracking-wider font-semibold opacity-70">${card.type}</span>
+                    </button>
+                `;
+            }).join('');
+
+            container.innerHTML = `
+                <div class="w-full max-w-md flex flex-col items-center">
+                    <span class="text-xs font-bold text-slate-500 mb-3 text-center">Klik 2 kartu yang memiliki nilai sama!</span>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full">
+                        ${cardsHTML}
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleM2CardClick(cardId) {
+            const card = m2ShuffledCards.find(c => c.id === cardId);
+            if (!card || card.matched) return;
+
+            playPopSound();
+
+            if (!m2SelectedCard) {
+                m2SelectedCard = card;
+                renderModule2(document.getElementById('interactive-area'));
+            } else if (m2SelectedCard.id === card.id) {
+                m2SelectedCard = null;
+                renderModule2(document.getElementById('interactive-area'));
+            } else {
+                // Check if pair matches
+                if (m2SelectedCard.pair === card.pair) {
+                    playChimeSound();
+                    m2SelectedCard.matched = true;
+                    card.matched = true;
+                    m2MatchesFound++;
+                    m2SelectedCard = null;
+                    renderModule2(document.getElementById('interactive-area'));
+                } else {
+                    playErrorSound();
+                    m2SelectedCard = null;
+                    renderModule2(document.getElementById('interactive-area'));
+                }
+            }
+        }
+
+
+        /* =============================================================
+           MODULE 3: LIPAT KERTAS DIGITAL (PECAHAN SENILAI)
+        ============================================================= */
+        function renderModule3(container) {
+            const folds = [
+                { den: 2, num: 1, label: "1/2 (2 Bagian)" },
+                { den: 4, num: 2, label: "2/4 (4 Bagian)" },
+                { den: 6, num: 3, label: "3/6 (6 Bagian)" },
+                { den: 8, num: 4, label: "4/8 (8 Bagian)" }
+            ];
+
+            const current = folds.find(f => f.den === m3FoldLevel) || folds[0];
+
+            let gridCols = `grid-cols-${current.den}`;
+
+            let gridItemsHTML = '';
+            for (let i = 0; i < current.den; i++) {
+                const isShaded = i < current.num;
+                gridItemsHTML += `
+                    <div class="h-28 border-r border-rose-300 last:border-r-0 flex items-center justify-center font-bold text-sm heading-font transition-all ${isShaded ? 'bg-rose-400 text-white' : 'bg-white text-slate-300'}">
+                        ${isShaded ? `1/${current.den}` : ''}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="w-full max-w-md flex flex-col items-center">
+                    
+                    <!-- Fold Selector Buttons -->
+                    <div class="flex items-center gap-1.5 mb-4 flex-wrap justify-center">
+                        ${folds.map(f => `
+                            <button onclick="setM3Fold(${f.den})" class="heading-font text-xs sm:text-sm px-3 py-1.5 rounded-xl font-bold transition-all ${m3FoldLevel === f.den ? 'bg-rose-600 text-white shadow-sm scale-105' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}">
+                                ${f.label}
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <!-- Digital Folded Paper Canvas -->
+                    <div class="w-full bg-white rounded-2xl border-3 border-rose-300 shadow-md p-2 overflow-hidden mb-3">
+                        <div class="w-full grid ${gridCols} rounded-xl overflow-hidden border-2 border-rose-200">
+                            ${gridItemsHTML}
+                        </div>
+                    </div>
+
+                    <!-- Explanatory Tag -->
+                    <div class="bg-rose-50 border border-rose-200 px-4 py-2 rounded-2xl text-center">
+                        <p class="heading-font text-sm font-bold text-rose-700">
+                            Pecahan ${current.num}/${current.den} = 1/2 (Setengah Kertas Utuh)
+                        </p>
+                        <p class="text-xs text-slate-600 font-semibold mt-0.5">
+                            Luas daerah merah tidak pernah berubah meskipun lipatan bertambah!
+                        </p>
+                    </div>
+
+                </div>
+            `;
+        }
+
+        function setM3Fold(den) {
+            playPopSound();
+            m3FoldLevel = den;
+            renderModule3(document.getElementById('interactive-area'));
+        }
+
+
+        /* =============================================================
+           MODULE 4: RESEP KUE AJAIB (OPERASI HITUNG)
+        ============================================================= */
+        function renderModule4(container) {
+            const recipe = m4Recipes[m4RecipeIndex];
+            const isRecipe1 = m4RecipeIndex === 0;
+
+            const percentFill = isRecipe1 ? (recipe.totalNum / recipe.den) * 100 : (recipe.targetNum / recipe.targetDen) * 100;
+
+            container.innerHTML = `
+                <div class="w-full max-w-md flex flex-col items-center">
+                    
+                    <!-- Recipe Toggle -->
+                    <div class="flex gap-2 mb-4">
+                        <button onclick="setM4Recipe(0)" class="heading-font text-xs sm:text-sm px-3.5 py-1.5 rounded-xl font-bold transition-all ${m4RecipeIndex === 0 ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}">
+                            Resep 1: Tepung (${recipe.label1} + ${recipe.label2})
+                        </button>
+                        <button onclick="setM4Recipe(1)" class="heading-font text-xs sm:text-sm px-3.5 py-1.5 rounded-xl font-bold transition-all ${m4RecipeIndex === 1 ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}">
+                            Resep 2: Susu (1/2 + 1/4)
+                        </button>
+                    </div>
+
+                    <!-- Mixing Beaker Graphic -->
+                    <div class="flex items-center justify-center gap-6 my-2">
+                        
+                        <!-- Beaker SVG -->
+                        <div class="relative w-28 h-44 bg-white border-4 border-slate-700 rounded-b-3xl rounded-t-lg overflow-hidden flex flex-col justify-end shadow-md">
+                            <!-- Liquid Level -->
+                            <div class="w-full bg-gradient-to-t from-emerald-500 to-green-400 transition-all duration-700 flex items-center justify-center" style="height: ${percentFill}%;">
+                                <span class="heading-font font-extrabold text-white text-lg drop-shadow">
+                                    ${isRecipe1 ? `${recipe.totalNum}/${recipe.den}` : `${recipe.targetNum}/${recipe.targetDen}`}
+                                </span>
+                            </div>
+
+                            <!-- Measurement Markings -->
+                            <div class="absolute inset-0 flex flex-col justify-between p-2 pointer-events-none">
+                                <div class="w-4 h-0.5 bg-slate-400 self-end"></div>
+                                <div class="w-6 h-0.5 bg-slate-600 self-end"></div>
+                                <div class="w-4 h-0.5 bg-slate-400 self-end"></div>
+                                <div class="w-6 h-0.5 bg-slate-600 self-end"></div>
+                            </div>
+                        </div>
+
+                        <!-- Mathematical Equation -->
+                        <div class="bg-white p-4 rounded-2xl border-2 border-emerald-300 shadow-sm flex flex-col items-center">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Persamaan Adonan:</span>
+                            
+                            ${isRecipe1 ? `
+                                <div class="flex items-center gap-2 heading-font text-xl font-bold text-emerald-700 mt-2">
+                                    <span>1/4</span>
+                                    <span>+</span>
+                                    <span>2/4</span>
+                                    <span>=</span>
+                                    <span class="text-2xl text-emerald-800 underline">3/4</span>
+                                </div>
+                                <p class="text-[11px] font-semibold text-slate-500 mt-2 text-center">Penyebut sama (4):<br>Tinggal jumlahkan pembilang (1 + 2 = 3)!</p>
+                            ` : `
+                                <div class="flex items-center gap-1.5 heading-font text-base sm:text-lg font-bold text-emerald-700 mt-2">
+                                    <span>1/2</span>
+                                    <span>+</span>
+                                    <span>1/4</span>
+                                    <span>=</span>
+                                    <span>2/4 + 1/4</span>
+                                    <span>=</span>
+                                    <span class="text-xl text-emerald-800 underline">3/4</span>
+                                </div>
+                                <p class="text-[11px] font-semibold text-slate-500 mt-2 text-center">Penyebut beda: Ubah 1/2 jadi 2/4 dulu,<br>lalu jumlahkan (2 + 1 = 3)!</p>
+                            `}
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+        }
+
+        function setM4Recipe(idx) {
+            playPopSound();
+            m4RecipeIndex = idx;
+            renderModule4(document.getElementById('interactive-area'));
+        }
+
+
+        /* =============================================================
+           MODULE 5: MINI KUIS & TANTANGAN AKHIR
+        ============================================================= */
+        function initModule5(container) {
+            m5CurrentQuestion = 0;
+            m5Score = 0;
+            renderModule5(container);
+        }
+
+        function renderModule5(container) {
+            if (m5CurrentQuestion >= m5Questions.length) {
+                // Trigger Confetti
+                triggerConfetti();
+                playChimeSound();
+
+                container.innerHTML = `
+                    <div class="text-center p-5 bg-purple-50 rounded-2xl border-3 border-purple-300 w-full max-w-md">
+                        <div class="w-16 h-16 bg-purple-200 rounded-full flex items-center justify-center text-3xl mx-auto mb-2 shadow-inner">
+                            🏆
+                        </div>
+                        <h4 class="heading-font text-2xl font-extrabold text-purple-900 mb-1">SELAMAT! KUIS SELESAI!</h4>
+                        <p class="text-slate-600 text-sm font-semibold mb-3">Skor Kamu: <span class="heading-font text-2xl font-bold text-purple-700">${m5Score * 20} / 100</span></p>
+                        
+                        <div class="bg-white p-3 rounded-xl border border-purple-200 mb-4 inline-flex items-center gap-2">
+                            <span class="text-2xl">🎖️</span>
+                            <span class="heading-font font-bold text-purple-800 text-sm">Lencana Ahli Pecahan Terbuka!</span>
+                        </div>
+
+                        <div>
+                            <button onclick="initModule5(document.getElementById('interactive-area'))" class="heading-font bg-purple-600 hover:bg-purple-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-md transition-all">
+                                Ulangi Kuis 🔄
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const q = m5Questions[m5CurrentQuestion];
+
+            container.innerHTML = `
+                <div class="w-full max-w-md flex flex-col items-center">
+                    
+                    <!-- Question Counter & Progress Bar -->
+                    <div class="w-full flex items-center justify-between text-xs font-bold text-slate-500 mb-2">
+                        <span>Soal ${m5CurrentQuestion + 1} dari ${m5Questions.length}</span>
+                        <span>Skor: ${m5Score * 20}</span>
+                    </div>
+                    <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden mb-4">
+                        <div class="h-full bg-purple-600 transition-all duration-300" style="width: ${((m5CurrentQuestion + 1) / m5Questions.length) * 100}%;"></div>
+                    </div>
+
+                    <!-- Question Card -->
+                    <div class="bg-white p-4 rounded-2xl border-2 border-purple-200 shadow-sm w-full mb-4 text-center">
+                        <h4 class="heading-font text-base sm:text-lg font-bold text-slate-800">
+                            ${q.q}
+                        </h4>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="space-y-2 w-full">
+                        ${q.options.map((opt, idx) => `
+                            <button onclick="answerM5Question(${idx})" class="w-full bg-white hover:bg-purple-50 border-2 border-slate-300 hover:border-purple-400 p-3 rounded-xl font-bold heading-font text-slate-700 text-sm sm:text-base transition-all text-left flex items-center justify-between shadow-sm">
+                                <span>${opt}</span>
+                                <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-400 text-xs flex items-center justify-center font-bold">➡️</span>
+                            </button>
+                        `).join('')}
+                    </div>
+
+                </div>
+            `;
+        }
+
+        function answerM5Question(selectedIdx) {
+            const q = m5Questions[m5CurrentQuestion];
+            if (selectedIdx === q.correct) {
+                playChimeSound();
+                m5Score++;
+            } else {
+                playErrorSound();
+            }
+
+            m5CurrentQuestion++;
+            renderModule5(document.getElementById('interactive-area'));
+        }
+
+        // Simple Confetti Cannon
+        function triggerConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = Array.from({ length: 80 }).map(() => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                size: Math.random() * 8 + 4,
+                color: ['#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#8b5cf6'][Math.floor(Math.random() * 5)],
+                speedY: Math.random() * 4 + 3,
+                speedX: Math.random() * 2 - 1
+            }));
+
+            let animationFrame;
+            function render() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                });
+
+                if (particles.some(p => p.y < canvas.height)) {
+                    animationFrame = requestAnimationFrame(render);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            render();
+        }
+    </script>
+</body>
+</html>

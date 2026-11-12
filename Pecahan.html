@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tujuan Pembelajaran - Dasar Pecahan</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka & Nunito -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif'],
+                    },
+                    colors: {
+                        cardBlue: '#dbeafe',
+                        borderBlue: '#3b82f6',
+                        cardYellow: '#fef3c7',
+                        borderYellow: '#d97706',
+                        cardPink: '#fee2e2',
+                        borderPink: '#ef4444',
+                        cardGreen: '#dcfce7',
+                        borderGreen: '#16a34a',
+                    },
+                    boxShadow: {
+                        'child': '0 8px 0px rgba(0, 0, 0, 0.06), 0 10px 15px -3px rgba(0, 0, 0, 0.05)',
+                        'child-hover': '0 12px 0px rgba(0, 0, 0, 0.08), 0 15px 20px -3px rgba(0, 0, 0, 0.08)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 50%, #fce7f3 100%);
+            min-height: 100vh;
+            user-select: none;
+        }
+
+        .heading-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Gentle Floating and Bouncing Animations */
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(2deg); }
+        }
+        @keyframes bounce-gentle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse-star {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.15) rotate(10deg); }
+        }
+
+        .animate-float {
+            animation: float-slow 4s ease-in-out infinite;
+        }
+        .animate-bounce-mascot {
+            animation: bounce-gentle 2.5s ease-in-out infinite;
+        }
+        .animate-star {
+            animation: pulse-star 2s ease-in-out infinite;
+        }
+
+        /* Modal backdrop transition */
+        .modal-backdrop {
+            background-color: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(4px);
+        }
+
+        /* Custom pizza slice highlight effect */
+        .pizza-slice {
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+        .pizza-slice:hover {
+            filter: brightness(1.15) drop-shadow(0 0 6px rgba(234, 179, 8, 0.6));
+            transform: scale(1.03);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen text-slate-800 antialiased justify-between p-4 sm:p-6 md:p-8">
+
+    <!-- MAIN CONTAINER -->
+    <div class="max-w-4xl mx-auto w-full flex-grow flex flex-col justify-between">
+        
+        <!-- HEADER SECTION -->
+        <header class="text-center mt-2 mb-6 sm:mb-8">
+            <div class="flex items-center justify-center gap-2 sm:gap-4 mb-2">
+                <!-- Sun/Star Left -->
+                <div class="animate-star text-amber-400 text-3xl sm:text-4xl md:text-5xl filter drop-shadow-sm">
+                    ☀️
+                </div>
+                <!-- Main Title matching photo style -->
+                <h1 class="heading-font text-2xl sm:text-4xl md:text-5xl font-bold tracking-wide text-slate-700 uppercase drop-shadow-sm">
+                    TUJUAN PEMBELAJARAN
+                </h1>
+                <!-- Sun/Star Right -->
+                <div class="animate-star text-amber-400 text-3xl sm:text-4xl md:text-5xl filter drop-shadow-sm" style="animation-delay: 0.5s;">
+                    ☀️
+                </div>
+            </div>
+
+            <!-- Subtitle -->
+            <p class="heading-font text-slate-600 text-base sm:text-xl font-medium tracking-wide">
+                Klik kotaknya ya, biar <span class="text-amber-600 font-bold">Kiko</span> & <span class="text-pink-600 font-bold">Momo</span> jelasin!
+            </p>
+        </header>
+
+        <!-- 2x2 OBJECTIVES GRID -->
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 my-auto">
+            
+            <!-- CARD 1: Pengertian Pecahan -->
+            <div onclick="openModal(1)" class="group cursor-pointer bg-[#dbeafe] border-3 sm:border-4 border-[#3b82f6] rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-child hover:shadow-child-hover hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden">
+                <!-- Completion Badge -->
+                <div id="check-1" class="hidden absolute top-3 right-3 bg-blue-500 text-white rounded-full p-1 shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+
+                <div class="flex items-start gap-3 sm:gap-4">
+                    <div class="heading-font flex-shrink-0 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/80 border-2 border-[#3b82f6] text-[#1d4ed8] font-bold text-lg sm:text-2xl flex items-center justify-center shadow-inner">
+                        1
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="heading-font text-lg sm:text-xl font-bold text-slate-800 mb-1 group-hover:text-blue-700 transition-colors">
+                            Memahami pengertian pecahan
+                        </h2>
+                        <p class="text-slate-600 text-sm sm:text-base font-semibold leading-relaxed flex items-center gap-1.5">
+                            <span>🍕</span> <span>Pizza dibagi-bagi itu namanya pecahan.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 2: Pembilang & Penyebut -->
+            <div onclick="openModal(2)" class="group cursor-pointer bg-[#fef3c7] border-3 sm:border-4 border-[#d97706] rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-child hover:shadow-child-hover hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden">
+                <!-- Completion Badge -->
+                <div id="check-2" class="hidden absolute top-3 right-3 bg-amber-500 text-white rounded-full p-1 shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+
+                <div class="flex items-start gap-3 sm:gap-4">
+                    <div class="heading-font flex-shrink-0 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/80 border-2 border-[#d97706] text-[#b45309] font-bold text-lg sm:text-2xl flex items-center justify-center shadow-inner">
+                        2
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="heading-font text-lg sm:text-xl font-bold text-slate-800 mb-1 group-hover:text-amber-700 transition-colors">
+                            Pembilang & penyebut
+                        </h2>
+                        <p class="text-slate-600 text-sm sm:text-base font-semibold leading-relaxed flex items-center gap-1.5">
+                            <span>🔢</span> <span>Yang atas dan bawah itu beda loh!</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 3: Pecahan Senilai -->
+            <div onclick="openModal(3)" class="group cursor-pointer bg-[#fee2e2] border-3 sm:border-4 border-[#ef4444] rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-child hover:shadow-child-hover hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden">
+                <!-- Completion Badge -->
+                <div id="check-3" class="hidden absolute top-3 right-3 bg-rose-500 text-white rounded-full p-1 shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+
+                <div class="flex items-start gap-3 sm:gap-4">
+                    <div class="heading-font flex-shrink-0 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/80 border-2 border-[#ef4444] text-[#b91c1c] font-bold text-lg sm:text-2xl flex items-center justify-center shadow-inner">
+                        3
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="heading-font text-lg sm:text-xl font-bold text-slate-800 mb-1 group-hover:text-rose-700 transition-colors">
+                            Pecahan senilai
+                        </h2>
+                        <p class="text-slate-600 text-sm sm:text-base font-semibold leading-relaxed flex items-center gap-1.5">
+                            <span>✨</span> <span>Beda tulisan, sama besarnya!</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 4: Membandingkan & Menghitung -->
+            <div onclick="openModal(4)" class="group cursor-pointer bg-[#dcfce7] border-3 sm:border-4 border-[#16a34a] rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-child hover:shadow-child-hover hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden">
+                <!-- Completion Badge -->
+                <div id="check-4" class="hidden absolute top-3 right-3 bg-emerald-500 text-white rounded-full p-1 shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+
+                <div class="flex items-start gap-3 sm:gap-4">
+                    <div class="heading-font flex-shrink-0 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/80 border-2 border-[#16a34a] text-[#15803d] font-bold text-lg sm:text-2xl flex items-center justify-center shadow-inner">
+                        4
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="heading-font text-lg sm:text-xl font-bold text-slate-800 mb-1 group-hover:text-emerald-700 transition-colors">
+                            Membandingkan & menghitung
+                        </h2>
+                        <p class="text-slate-600 text-sm sm:text-base font-semibold leading-relaxed flex items-start gap-1.5">
+                            <span class="mt-0.5">⚖️</span> <span>Mana yang lebih besar? Berapa sisanya?</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER: MASCOT CHARACTERS & STAR PROGRESS -->
+        <footer class="mt-8 mb-4 text-center">
+            <!-- Progress Star Tracker -->
+            <div class="inline-flex items-center gap-2 bg-white/70 backdrop-blur-sm border-2 border-amber-300 rounded-full px-4 py-1.5 mb-4 shadow-sm">
+                <span class="heading-font text-xs sm:text-sm font-bold text-amber-800">Bintang Kamu:</span>
+                <div class="flex gap-1" id="star-tracker">
+                    <span class="text-slate-300 text-lg transition-transform duration-300">★</span>
+                    <span class="text-slate-300 text-lg transition-transform duration-300">★</span>
+                    <span class="text-slate-300 text-lg transition-transform duration-300">★</span>
+                    <span class="text-slate-300 text-lg transition-transform duration-300">★</span>
+                </div>
+            </div>
+
+            <!-- Cute Mascot Trio (Kiko, Star, Momo) as in reference photo -->
+            <div class="flex items-center justify-center gap-6 sm:gap-10">
+                
+                <!-- Mascot 1: Kiko Cat -->
+                <div onclick="mascotSpeak('kiko')" class="group cursor-pointer flex flex-col items-center animate-bounce-mascot" style="animation-delay: 0s;">
+                    <div class="w-14 h-14 sm:w-20 sm:h-20 bg-gradient-to-tr from-amber-400 to-amber-200 rounded-2xl border-4 border-amber-500 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform relative">
+                        <!-- SVG Cat Avatar -->
+                        <svg class="w-10 h-10 sm:w-14 sm:h-14" viewBox="0 0 100 100">
+                            <!-- Ears -->
+                            <polygon points="15,25 35,5 45,35" fill="#f59e0b"/>
+                            <polygon points="85,25 65,5 55,35" fill="#f59e0b"/>
+                            <polygon points="22,23 33,10 40,32" fill="#fef3c7"/>
+                            <polygon points="78,23 67,10 60,32" fill="#fef3c7"/>
+                            <!-- Head -->
+                            <ellipse cx="50" cy="55" rx="40" ry="32" fill="#fbbf24"/>
+                            <!-- Eyes -->
+                            <ellipse cx="35" cy="50" rx="5" ry="7" fill="#1e293b"/>
+                            <ellipse cx="65" cy="50" rx="5" ry="7" fill="#1e293b"/>
+                            <circle cx="33" cy="48" r="2" fill="#ffffff"/>
+                            <circle cx="63" cy="48" r="2" fill="#ffffff"/>
+                            <!-- Nose & Mouth -->
+                            <polygon points="47,60 53,60 50,64" fill="#f43f5e"/>
+                            <path d="M 42 66 Q 50 72 58 66" stroke="#1e293b" stroke-width="3" fill="none" stroke-linecap="round"/>
+                            <!-- Cheeks -->
+                            <circle cx="26" cy="58" r="6" fill="#f43f5e" opacity="0.4"/>
+                            <circle cx="74" cy="58" r="6" fill="#f43f5e" opacity="0.4"/>
+                        </svg>
+                    </div>
+                    <span class="heading-font text-xs sm:text-sm font-bold text-amber-800 mt-1 bg-amber-100/80 px-2 py-0.5 rounded-full border border-amber-300">Kiko 🐱</span>
+                </div>
+
+                <!-- Center Star Icon -->
+                <div class="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center animate-star text-amber-400 text-4xl sm:text-5xl filter drop-shadow">
+                    ⭐
+                </div>
+
+                <!-- Mascot 2: Momo Mouse -->
+                <div onclick="mascotSpeak('momo')" class="group cursor-pointer flex flex-col items-center animate-bounce-mascot" style="animation-delay: 0.8s;">
+                    <div class="w-14 h-14 sm:w-20 sm:h-20 bg-gradient-to-tr from-slate-100 to-pink-100 rounded-2xl border-4 border-pink-300 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform relative">
+                        <!-- SVG Mouse Avatar -->
+                        <svg class="w-10 h-10 sm:w-14 sm:h-14" viewBox="0 0 100 100">
+                            <!-- Ears -->
+                            <circle cx="22" cy="22" r="18" fill="#e2e8f0"/>
+                            <circle cx="22" cy="22" r="11" fill="#f472b6"/>
+                            <circle cx="78" cy="22" r="18" fill="#e2e8f0"/>
+                            <circle cx="78" cy="22" r="11" fill="#f472b6"/>
+                            <!-- Head -->
+                            <ellipse cx="50" cy="58" rx="35" ry="30" fill="#f1f5f9"/>
+                            <!-- Eyes -->
+                            <ellipse cx="38" cy="52" rx="4" ry="6" fill="#1e293b"/>
+                            <ellipse cx="62" cy="52" rx="4" ry="6" fill="#1e293b"/>
+                            <circle cx="36" cy="50" r="1.5" fill="#ffffff"/>
+                            <circle cx="60" cy="50" r="1.5" fill="#ffffff"/>
+                            <!-- Nose -->
+                            <circle cx="50" cy="62" r="5" fill="#ec4899"/>
+                            <!-- Whiskers -->
+                            <line x1="15" y1="60" x2="30" y2="62" stroke="#94a3b8" stroke-width="2"/>
+                            <line x1="15" y1="68" x2="30" y2="66" stroke="#94a3b8" stroke-width="2"/>
+                            <line x1="85" y1="60" x2="70" y2="62" stroke="#94a3b8" stroke-width="2"/>
+                            <line x1="85" y1="68" x2="70" y2="66" stroke="#94a3b8" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <span class="heading-font text-xs sm:text-sm font-bold text-pink-700 mt-1 bg-pink-100/80 px-2 py-0.5 rounded-full border border-pink-300">Momo 🐭</span>
+                </div>
+
+            </div>
+        </footer>
+    </div>
+
+    <!-- MODAL POPUP DIALOG -->
+    <div id="modal-container" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop transition-opacity duration-300">
+        
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto border-4 border-amber-300 shadow-2xl p-5 sm:p-7 relative flex flex-col">
+            
+            <!-- Close Button X -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 text-slate-500 font-bold hover:bg-rose-100 hover:text-rose-600 transition-colors flex items-center justify-center text-xl">
+                ✕
+            </button>
+
+            <!-- Modal Header -->
+            <div class="flex items-center gap-3 mb-4 pr-8">
+                <span id="modal-badge" class="heading-font w-10 h-10 rounded-full bg-blue-500 text-white font-bold text-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                    1
+                </span>
+                <h3 id="modal-title" class="heading-font text-xl sm:text-2xl font-bold text-slate-800">
+                    Judul Modul
+                </h3>
+            </div>
+
+            <!-- Dialogue Speech Bubbles (Kiko & Momo) -->
+            <div class="space-y-3 mb-5">
+                <!-- Kiko Speech -->
+                <div class="flex items-start gap-3 bg-amber-50 rounded-2xl p-3 sm:p-4 border border-amber-200">
+                    <div class="w-10 h-10 rounded-full bg-amber-300 border-2 border-amber-500 flex items-center justify-center text-xl flex-shrink-0">🐱</div>
+                    <div>
+                        <span class="heading-font font-bold text-amber-800 text-xs sm:text-sm block">Kiko</span>
+                        <p id="kiko-dialog" class="text-slate-700 text-sm sm:text-base font-semibold leading-relaxed">
+                            Penjelasan Kiko...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Momo Speech -->
+                <div class="flex items-start gap-3 bg-pink-50 rounded-2xl p-3 sm:p-4 border border-pink-200">
+                    <div class="w-10 h-10 rounded-full bg-pink-200 border-2 border-pink-400 flex items-center justify-center text-xl flex-shrink-0">🐭</div>
+                    <div>
+                        <span class="heading-font font-bold text-pink-700 text-xs sm:text-sm block">Momo</span>
+                        <p id="momo-dialog" class="text-slate-700 text-sm sm:text-base font-semibold leading-relaxed">
+                            Penjelasan Momo...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE INTERFACE AREA -->
+            <div id="interactive-area" class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 mb-6 flex-grow flex flex-col items-center justify-center min-h-[220px]">
+                <!-- Dynamic Content Injected Here -->
+            </div>
+
+            <!-- Modal Action Footer -->
+            <div class="flex items-center justify-between gap-4 pt-2 border-t border-slate-100">
+                <span class="text-xs sm:text-sm text-slate-500 font-semibold italic">Cobain simulasi di atas ya!</span>
+                <button id="complete-btn" onclick="completeTopic()" class="heading-font bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold px-6 py-3 rounded-2xl shadow-md hover:shadow-lg transition-all transform active:scale-95 flex items-center gap-2">
+                    <span>Aku Mengerti! ✨</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Sound effects using Web Audio API
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playPopSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(350, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(700, audioCtx.currentTime + 0.08);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.08);
+        }
+
+        function playChimeSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const now = audioCtx.currentTime;
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                gain.gain.setValueAtTime(0.25, now + i * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now + i * 0.08);
+                osc.stop(now + i * 0.08 + 0.3);
+            });
+        }
+
+        // Global State
+        let currentTopic = 1;
+        const completedTopics = new Set();
+
+        // Pizza Interactive State (Topic 1)
+        let pizzaSlices = 4;
+        let eatenSlices = new Array(8).fill(false);
+
+        // Denominator/Numerator Builder State (Topic 2)
+        let numerator = 1;
+        let denominator = 4;
+
+        // Equivalent Fractions State (Topic 3)
+        let equivScale = 1; // 1 -> 1/2, 2 -> 2/4, 3 -> 3/6, 4 -> 4/8
+
+        // Quiz State (Topic 4)
+        let topic4Score = 0;
+
+        // Open Modal Handler
+        function openModal(topicId) {
+            playPopSound();
+            currentTopic = topicId;
+            const container = document.getElementById('modal-container');
+            const badge = document.getElementById('modal-badge');
+            const title = document.getElementById('modal-title');
+            const kikoDialog = document.getElementById('kiko-dialog');
+            const momoDialog = document.getElementById('momo-dialog');
+            const interactiveArea = document.getElementById('interactive-area');
+
+            container.classList.remove('hidden');
+
+            if (topicId === 1) {
+                badge.className = "heading-font w-10 h-10 rounded-full bg-blue-500 text-white font-bold text-xl flex items-center justify-center flex-shrink-0 shadow-sm";
+                title.innerText = "1. Memahami Pengertian Pecahan";
+                kikoDialog.innerHTML = "Pecahan itu artinya <b>bagian dari keseluruhan yang utuh</b>! Bayangkan kita punya 1 pizza lezat 🍕.";
+                momoDialog.innerHTML = "Klik potongan pizzanya di bawah buat memakannya! Coba lihat berapa potong yang kamu ambil.";
+                renderPizzaInteractive(interactiveArea);
+            } 
+            else if (topicId === 2) {
+                badge.className = "heading-font w-10 h-10 rounded-full bg-amber-500 text-white font-bold text-xl flex items-center justify-center flex-shrink-0 shadow-sm";
+                title.innerText = "2. Pembilang & Penyebut";
+                kikoDialog.innerHTML = "Angka di <b>ATAS</b> namanya <b>Pembilang</b> (bagian yang kita ambil).";
+                momoDialog.innerHTML = "Angka di <b>BAWAH</b> namanya <b>Penyebut</b> (total semua potongan). Jangan sampai tertukar ya!";
+                renderNumDenomInteractive(interactiveArea);
+            } 
+            else if (topicId === 3) {
+                badge.className = "heading-font w-10 h-10 rounded-full bg-rose-500 text-white font-bold text-xl flex items-center justify-center flex-shrink-0 shadow-sm";
+                title.innerText = "3. Pecahan Senilai";
+                kikoDialog.innerHTML = "<b>Pecahan Senilai</b> adalah pecahan yang nilainya sama besar, meskipun angka pembilang & penyebutnya berbeda!";
+                momoDialog.innerHTML = "Coba geser tombolnya! 1/2 pizza itu <b>sama besarnya</b> dengan 2/4 maupun 4/8 pizza!";
+                renderEquivalentInteractive(interactiveArea);
+            } 
+            else if (topicId === 4) {
+                badge.className = "heading-font w-10 h-10 rounded-full bg-emerald-500 text-white font-bold text-xl flex items-center justify-center flex-shrink-0 shadow-sm";
+                title.innerText = "4. Membandingkan & Menghitung";
+                kikoDialog.innerHTML = "Kalau penyebutnya sama, pecahan dengan pembilang lebih besar nilainya <b>lebih besar</b>!";
+                momoDialog.innerHTML = "Ayo bantu kami menyelesaikan mini kuis pecahan di bawah ini!";
+                renderCalcInteractive(interactiveArea);
+            }
+        }
+
+        function closeModal() {
+            playPopSound();
+            document.getElementById('modal-container').classList.add('hidden');
+        }
+
+        function completeTopic() {
+            playChimeSound();
+            completedTopics.add(currentTopic);
+            
+            // Show Checkmark on card
+            const check = document.getElementById(`check-${currentTopic}`);
+            if (check) check.classList.remove('hidden');
+
+            // Update Star Tracker in Footer
+            updateStarTracker();
+
+            closeModal();
+        }
+
+        function updateStarTracker() {
+            const tracker = document.getElementById('star-tracker');
+            const stars = tracker.children;
+            const count = completedTopics.size;
+
+            for (let i = 0; i < 4; i++) {
+                if (i < count) {
+                    stars[i].className = "text-amber-400 text-xl font-bold animate-star transition-transform duration-300 inline-block";
+                    stars[i].innerText = "⭐";
+                } else {
+                    stars[i].className = "text-slate-300 text-lg transition-transform duration-300";
+                    stars[i].innerText = "★";
+                }
+            }
+        }
+
+        function mascotSpeak(name) {
+            playPopSound();
+            if (name === 'kiko') {
+                alert("🐱 Kiko: Meow! Yuk klik salah satu kotak angka 1 sampai 4 untuk mulai belajar pecahan!");
+            } else {
+                alert("🐭 Momo: Squeak! Aku dan Kiko siap mendampingi kamu belajar sampai paham!");
+            }
+        }
+
+        /* -------------------------------------------------------------
+           INTERACTIVE SIMULATIONS
+        ------------------------------------------------------------- */
+
+        // 1. PIZZA INTERACTIVE SIMULATION
+        function renderPizzaInteractive(container) {
+            eatenSlices.fill(false);
+            updatePizzaView(container);
+        }
+
+        function setPizzaSlices(num) {
+            pizzaSlices = num;
+            eatenSlices.fill(false);
+            playPopSound();
+            updatePizzaView(document.getElementById('interactive-area'));
+        }
+
+        function toggleSlice(index) {
+            eatenSlices[index] = !eatenSlices[index];
+            playPopSound();
+            updatePizzaView(document.getElementById('interactive-area'));
+        }
+
+        function updatePizzaView(container) {
+            const eatenCount = eatenSlices.slice(0, pizzaSlices).filter(Boolean).length;
+            const remainingCount = pizzaSlices - eatenCount;
+
+            // Generate SVG Slices
+            let svgPaths = '';
+            const cx = 100, cy = 100, r = 85;
+
+            for (let i = 0; i < pizzaSlices; i++) {
+                const startAngle = (i * 360 / pizzaSlices) * (Math.PI / 180);
+                const endAngle = ((i + 1) * 360 / pizzaSlices) * (Math.PI / 180);
+
+                const x1 = cx + r * Math.cos(startAngle);
+                const y1 = cy + r * Math.sin(startAngle);
+                const x2 = cx + r * Math.cos(endAngle);
+                const y2 = cy + r * Math.sin(endAngle);
+
+                const largeArc = (360 / pizzaSlices) > 180 ? 1 : 0;
+                const pathData = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+
+                const isEaten = eatenSlices[i];
+                const sliceColor = isEaten ? '#f1f5f9' : (i % 2 === 0 ? '#f59e0b' : '#fbbf24');
+                const strokeColor = isEaten ? '#cbd5e1' : '#d97706';
+
+                // Topping dots for active slices
+                const midAngle = ((i + 0.5) * 360 / pizzaSlices) * (Math.PI / 180);
+                const tx = cx + (r * 0.55) * Math.cos(midAngle);
+                const ty = cy + (r * 0.55) * Math.sin(midAngle);
+
+                svgPaths += `
+                    <g class="pizza-slice" onclick="toggleSlice(${i})">
+                        <path d="${pathData}" fill="${sliceColor}" stroke="${strokeColor}" stroke-width="3" />
+                        ${!isEaten ? `<circle cx="${tx}" cy="${ty}" r="6" fill="#dc2626"/>` : ''}
+                    </g>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="w-full flex flex-col items-center">
+                    <!-- Slice Count Selector -->
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xs sm:text-sm font-bold text-slate-600">Bagi Pizza Jadi:</span>
+                        <div class="flex gap-1.5">
+                            ${[2, 4, 6, 8].map(n => `
+                                <button onclick="setPizzaSlices(${n})" class="heading-font text-xs sm:text-sm px-3 py-1 rounded-xl font-bold transition-all ${pizzaSlices === n ? 'bg-amber-500 text-white shadow-sm' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}">
+                                    ${n} Potong
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Pizza SVG Canvas -->
+                    <div class="relative w-44 h-44 sm:w-52 sm:h-52 my-1 filter drop-shadow-md">
+                        <svg viewBox="0 0 200 200" class="w-full h-full">
+                            <!-- Pizza Plate -->
+                            <circle cx="100" cy="100" r="95" fill="#e2e8f0" stroke="#94a3b8" stroke-width="4"/>
+                            <circle cx="100" cy="100" r="88" fill="#ffffff"/>
+                            ${svgPaths}
+                        </svg>
+                    </div>
+
+                    <!-- Fraction Display Box -->
+                    <div class="mt-3 bg-white px-5 py-2.5 rounded-2xl border-2 border-amber-300 shadow-sm flex items-center gap-6 text-center">
+                        <div>
+                            <span class="text-xs text-slate-500 font-bold block">Dimakan:</span>
+                            <span class="heading-font text-lg sm:text-2xl font-bold text-rose-600">${eatenCount}/${pizzaSlices}</span>
+                        </div>
+                        <div class="h-8 w-0.5 bg-slate-200"></div>
+                        <div>
+                            <span class="text-xs text-slate-500 font-bold block">Sisa Pizza:</span>
+                            <span class="heading-font text-lg sm:text-2xl font-bold text-emerald-600">${remainingCount}/${pizzaSlices}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+
+        // 2. NUMERATOR & DENOMINATOR BUILDER
+        function renderNumDenomInteractive(container) {
+            if (numerator > denominator) numerator = denominator;
+            
+            let blocksHTML = '';
+            for (let i = 1; i <= denominator; i++) {
+                const isActive = i <= numerator;
+                blocksHTML += `
+                    <div onclick="setNumeratorDirect(${i})" class="h-14 rounded-xl flex items-center justify-center font-bold heading-font text-lg transition-all duration-200 cursor-pointer ${isActive ? 'bg-amber-400 text-amber-950 border-2 border-amber-600 shadow-sm scale-[1.02]' : 'bg-slate-200 text-slate-400 border-2 border-slate-300 hover:bg-slate-300'}">
+                        ${i}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="w-full flex flex-col md:flex-row items-center justify-around gap-6">
+                    
+                    <!-- Fraction Symbol Visualizer -->
+                    <div class="flex items-center gap-4">
+                        <div class="flex flex-col items-center bg-white p-4 rounded-2xl border-3 border-amber-300 shadow-md">
+                            
+                            <!-- Numerator Control -->
+                            <div class="flex items-center gap-2 mb-1">
+                                <button onclick="changeNum(-1)" class="w-8 h-8 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold text-lg flex items-center justify-center">-</button>
+                                <span class="heading-font text-3xl sm:text-4xl font-extrabold text-amber-600 w-12 text-center">${numerator}</span>
+                                <button onclick="changeNum(1)" class="w-8 h-8 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold text-lg flex items-center justify-center">+</button>
+                            </div>
+                            <span class="text-xs font-bold text-amber-700 uppercase tracking-wider">PEMBILANG (Atas)</span>
+
+                            <!-- Fraction Line -->
+                            <div class="w-28 h-1.5 bg-slate-800 rounded-full my-2"></div>
+
+                            <!-- Denominator Control -->
+                            <div class="flex items-center gap-2 mt-1">
+                                <button onclick="changeDenom(-1)" class="w-8 h-8 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold text-lg flex items-center justify-center">-</button>
+                                <span class="heading-font text-3xl sm:text-4xl font-extrabold text-blue-600 w-12 text-center">${denominator}</span>
+                                <button onclick="changeDenom(1)" class="w-8 h-8 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold text-lg flex items-center justify-center">+</button>
+                            </div>
+                            <span class="text-xs font-bold text-blue-700 uppercase tracking-wider">PENYEBUT (Bawah)</span>
+
+                        </div>
+                    </div>
+
+                    <!-- Visual Block Representation -->
+                    <div class="w-full max-w-xs flex flex-col">
+                        <span class="text-xs font-bold text-slate-500 mb-2 text-center">Visual Balok (${numerator} dari ${denominator} diarsir):</span>
+                        <div class="grid grid-cols-${Math.min(denominator, 4)} gap-2">
+                            ${blocksHTML}
+                        </div>
+                    </div>
+
+                </div>
+            `;
+        }
+
+        function changeNum(delta) {
+            playPopSound();
+            numerator = Math.max(1, Math.min(denominator, numerator + delta));
+            renderNumDenomInteractive(document.getElementById('interactive-area'));
+        }
+
+        function changeDenom(delta) {
+            playPopSound();
+            denominator = Math.max(2, Math.min(8, denominator + delta));
+            if (numerator > denominator) numerator = denominator;
+            renderNumDenomInteractive(document.getElementById('interactive-area'));
+        }
+
+        function setNumeratorDirect(val) {
+            playPopSound();
+            numerator = val;
+            renderNumDenomInteractive(document.getElementById('interactive-area'));
+        }
+
+
+        // 3. EQUIVALENT FRACTIONS SIMULATION
+        function renderEquivalentInteractive(container) {
+            const scales = [
+                { num: 1, den: 2, label: "1/2" },
+                { num: 2, den: 4, label: "2/4" },
+                { num: 3, den: 6, label: "3/6" },
+                { num: 4, den: 8, label: "4/8" }
+            ];
+
+            const current = scales[equivScale - 1];
+
+            container.innerHTML = `
+                <div class="w-full flex flex-col items-center">
+                    <!-- Selector -->
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-xs sm:text-sm font-bold text-slate-600">Pilih Bentuk Pecahan:</span>
+                        <div class="flex gap-1.5">
+                            ${scales.map((s, idx) => `
+                                <button onclick="setEquivScale(${idx + 1})" class="heading-font text-sm px-3.5 py-1.5 rounded-xl font-bold transition-all ${equivScale === idx + 1 ? 'bg-rose-500 text-white shadow-sm scale-105' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}">
+                                    ${s.label}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Side-by-Side Comparison Bars -->
+                    <div class="w-full max-w-md bg-white p-4 rounded-2xl border-2 border-rose-200 shadow-sm space-y-4">
+                        
+                        <!-- Reference Bar 1/2 -->
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                                <span>Acuan Dasar: 1/2</span>
+                                <span>50% Utuh</span>
+                            </div>
+                            <div class="h-10 w-full bg-slate-100 rounded-xl overflow-hidden border-2 border-slate-300 flex">
+                                <div class="w-1/2 h-full bg-rose-400 border-r-2 border-rose-500 flex items-center justify-center text-white heading-font font-bold">1/2</div>
+                                <div class="w-1/2 h-full bg-slate-100"></div>
+                            </div>
+                        </div>
+
+                        <!-- Scaled Equivalent Bar -->
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-rose-700 mb-1">
+                                <span>Pecahan Kamu: ${current.label}</span>
+                                <span>Luasnya Sama!</span>
+                            </div>
+                            <div class="h-10 w-full bg-slate-100 rounded-xl overflow-hidden border-2 border-rose-300 flex">
+                                ${Array.from({ length: current.den }).map((_, i) => `
+                                    <div class="h-full border-r border-rose-300 flex items-center justify-center font-bold text-xs heading-font ${i < current.num ? 'bg-rose-500 text-white' : 'bg-slate-100 text-slate-400'}" style="width: ${100 / current.den}%">
+                                        1/${current.den}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <p class="mt-3 text-xs sm:text-sm font-bold text-rose-600 text-center bg-rose-50 px-4 py-1.5 rounded-full border border-rose-200">
+                        ✨ Meskipun dipotong jadi ${current.den} bagian, ${current.num} potong nilainya PERSIS SAMA dengan 1/2!
+                    </p>
+                </div>
+            `;
+        }
+
+        function setEquivScale(scale) {
+            playPopSound();
+            equivScale = scale;
+            renderEquivalentInteractive(document.getElementById('interactive-area'));
+        }
+
+
+        // 4. COMPARISON & CALCULATION QUIZ
+        function renderCalcInteractive(container) {
+            container.innerHTML = `
+                <div class="w-full max-w-md flex flex-col items-center">
+                    
+                    <div class="bg-white rounded-2xl p-4 border-2 border-emerald-300 shadow-sm w-full text-center mb-3">
+                        <span class="heading-font text-xs font-bold text-emerald-600 bg-emerald-100 px-3 py-1 rounded-full uppercase">Tantangan Kiko & Momo</span>
+                        <h4 class="heading-font text-lg sm:text-xl font-bold text-slate-800 mt-2">
+                            Mana pecahan yang LEBIH BESAR?
+                        </h4>
+                        
+                        <!-- Comparison Expression -->
+                        <div class="flex items-center justify-center gap-4 my-4">
+                            <div class="bg-emerald-50 border-2 border-emerald-400 rounded-xl p-3 w-20 text-center">
+                                <span class="heading-font text-2xl font-extrabold text-emerald-700">3/5</span>
+                            </div>
+
+                            <span class="heading-font text-2xl font-bold text-slate-400">vs</span>
+
+                            <div class="bg-emerald-50 border-2 border-emerald-400 rounded-xl p-3 w-20 text-center">
+                                <span class="heading-font text-2xl font-extrabold text-emerald-700">1/5</span>
+                            </div>
+                        </div>
+
+                        <!-- Answer Buttons -->
+                        <div class="flex justify-center gap-3">
+                            <button onclick="checkQuizAnswer('3/5')" class="heading-font bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-5 py-2 rounded-xl shadow-sm transition-transform active:scale-95">
+                                3/5 Lebih Besar 👈
+                            </button>
+                            <button onclick="checkQuizAnswer('1/5')" class="heading-font bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-5 py-2 rounded-xl transition-transform active:scale-95">
+                                1/5 Lebih Besar 👉
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="quiz-feedback" class="text-sm font-bold text-slate-600 h-6 text-center"></div>
+
+                </div>
+            `;
+        }
+
+        function checkQuizAnswer(ans) {
+            const feedback = document.getElementById('quiz-feedback');
+            if (ans === '3/5') {
+                playChimeSound();
+                feedback.className = "text-sm font-bold text-emerald-600 animate-bounce";
+                feedback.innerText = "🎉 Benar sekali! Karena penyebutnya sama (5), 3 lebih besar dari 1!";
+            } else {
+                playPopSound();
+                feedback.className = "text-sm font-bold text-rose-500";
+                feedback.innerText = "😅 Coba lagi ya! Lihat angka atasnya (pembilang): 3 vs 1.";
+            }
+        }
+    </script>
+</body>
+</html>
